@@ -2,9 +2,11 @@ import 'server-only';
 
 import { readFileSync } from 'node:fs';
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 
 let cachedDb;
+let cachedApp;
 let credentialsLoaded = false;
 let serviceAccount;
 
@@ -44,9 +46,8 @@ function loadServiceAccount() {
   }
 }
 
-export function getFirebaseAdminDb() {
-  if (cachedDb) return cachedDb;
-
+function getFirebaseAdminApp() {
+  if (cachedApp) return cachedApp;
   const credentials = loadServiceAccount();
   if (!process.env.FIREBASE_PROJECT_ID || !credentials) return null;
 
@@ -54,7 +55,7 @@ export function getFirebaseAdminDb() {
     throw new Error('Firebase service-account project_id does not match FIREBASE_PROJECT_ID.');
   }
 
-  const app =
+  cachedApp =
     getApps().find((candidate) => candidate.name === 'wepste-admin') ||
     initializeApp(
       {
@@ -67,8 +68,21 @@ export function getFirebaseAdminDb() {
       'wepste-admin',
     );
 
+  return cachedApp;
+}
+
+export function getFirebaseAdminDb() {
+  if (cachedDb) return cachedDb;
+  const app = getFirebaseAdminApp();
+  if (!app) return null;
+
   cachedDb = getFirestore(app);
   return cachedDb;
+}
+
+export function getFirebaseAdminAuth() {
+  const app = getFirebaseAdminApp();
+  return app ? getAuth(app) : null;
 }
 
 export function adminServerTimestamp() {

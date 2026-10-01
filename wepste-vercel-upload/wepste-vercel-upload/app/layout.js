@@ -148,6 +148,46 @@ const themeBootstrap = `(() => {
   });
 })();`;
 
+const analyticsBootstrap = `(() => {
+  if (
+    location.pathname === '/admin' ||
+    location.pathname.startsWith('/admin/') ||
+    navigator.doNotTrack === '1'
+  ) {
+    return;
+  }
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () {
+    window.dataLayer.push(arguments);
+  };
+  window.gtag('js', new Date());
+  window.gtag('config', ${JSON.stringify(analyticsId)});
+  let timer;
+  let loaded = false;
+  function loadAnalytics() {
+    if (loaded) return;
+    loaded = true;
+    clearTimeout(timer);
+    ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach((eventName) =>
+      window.removeEventListener(eventName, loadAnalytics),
+    );
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ${JSON.stringify(analyticsId)};
+    document.head.appendChild(script);
+  }
+  ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach((eventName) =>
+    window.addEventListener(eventName, loadAnalytics, { once: true, passive: true }),
+  );
+  window.addEventListener(
+    'load',
+    () => {
+      timer = setTimeout(loadAnalytics, 15000);
+    },
+    { once: true },
+  );
+})();`;
+
 export const metadata = {
   title: 'ويب ستيب | تطوير ويب وتطبيقات وأنظمة ERP',
   description:
@@ -226,7 +266,7 @@ export default function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',${JSON.stringify(analyticsId)});var gaTimer;var gaLoaded=false;function loadAnalytics(){if(gaLoaded)return;gaLoaded=true;clearTimeout(gaTimer);['pointerdown','keydown','touchstart','wheel'].forEach(function(eventName){window.removeEventListener(eventName,loadAnalytics)});var script=document.createElement('script');script.async=true;script.src='https://www.googletagmanager.com/gtag/js?id='+${JSON.stringify(analyticsId)};document.head.appendChild(script)}['pointerdown','keydown','touchstart','wheel'].forEach(function(eventName){window.addEventListener(eventName,loadAnalytics,{once:true,passive:true})});window.addEventListener('load',function(){gaTimer=setTimeout(loadAnalytics,15000)},{once:true});`,
+            __html: analyticsBootstrap,
           }}
         />
         <script

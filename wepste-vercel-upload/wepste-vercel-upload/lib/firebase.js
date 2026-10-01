@@ -1,4 +1,5 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -23,3 +24,4 @@ const app = isFirebaseConfigured
 
 export const db = app ? getFirestore(app) : null;
 export const storage = app ? getStorage(app) : null;
+export const auth = app ? getAuth(app) : null;
