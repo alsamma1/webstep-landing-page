@@ -34,8 +34,10 @@ export async function submitLeadAction(formData) {
       );
       return {
         success: false,
-        message: 'إعداد حفظ الطلبات غير مكتمل على الموقع. يرجى التواصل معنا عبر واتساب مؤقتًا.',
+        message:
+          'خدمة حفظ الطلبات غير مهيأة في الاستضافة. لم يُسجّل طلبك؛ تواصل معنا عبر واتساب.',
         errors: {},
+        canContactOnWhatsApp: true,
       };
     }
 
@@ -51,6 +53,20 @@ export async function submitLeadAction(formData) {
     return { success: true, message: 'تم إرسال طلبك بنجاح. سيتم التواصل معك في أقرب وقت.' };
   } catch (error) {
     console.error('submitLeadAction failed:', error);
-    return { success: false, message: 'تعذر حفظ الطلب الآن. يرجى المحاولة لاحقًا.', errors: {} };
+    const isMissingDatabase = error?.code === 5 || error?.code === 'not-found';
+    const isPermissionDenied =
+      error?.code === 7 || error?.code === 'permission-denied';
+    const message = isMissingDatabase
+      ? 'قاعدة بيانات الطلبات غير مفعّلة في Firebase. لم يُسجّل طلبك؛ تواصل معنا عبر واتساب.'
+      : isPermissionDenied
+        ? 'حساب خدمة الموقع لا يملك صلاحية حفظ الطلبات في Firestore. لم يُسجّل طلبك؛ تواصل عبر واتساب.'
+        : 'تعذر الاتصال بقاعدة بيانات الطلبات. لم يُسجّل طلبك؛ حاول مجددًا أو تواصل عبر واتساب.';
+
+    return {
+      success: false,
+      message,
+      errors: {},
+      canContactOnWhatsApp: true,
+    };
   }
 }

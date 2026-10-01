@@ -1,6 +1,15 @@
 import './globals.css';
-import '@fontsource-variable/cairo';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import localFont from 'next/font/local';
+
+const cairo = localFont({
+  src: '../node_modules/@fontsource-variable/cairo/files/cairo-arabic-wght-normal.woff2',
+  variable: '--font-cairo',
+  display: 'swap',
+  weight: '200 1000',
+  style: 'normal',
+  adjustFontFallback: 'Arial',
+});
+const analyticsId = process.env.NEXT_PUBLIC_GA_ID || 'G-30E5FSM42H';
 
 const arabCountries = [
   ['SA', 'المملكة العربية السعودية'],
@@ -107,11 +116,36 @@ const schema = {
 };
 
 const themeBootstrap = `(() => {
+  const root = document.documentElement;
   try {
     const stored = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.classList.toggle('dark', stored ? stored === 'dark' : prefersDark);
+    root.classList.toggle('dark', stored ? stored === 'dark' : prefersDark);
   } catch {}
+  const updateThemeLabel = (button) => {
+    const isDark = root.classList.contains('dark');
+    button.setAttribute(
+      'aria-label',
+      isDark ? 'التبديل إلى الوضع الفاتح' : 'التبديل إلى الوضع الداكن',
+    );
+  };
+  document.addEventListener(
+    'DOMContentLoaded',
+    () => document.querySelectorAll('[data-theme-toggle]').forEach(updateThemeLabel),
+    { once: true },
+  );
+  document.addEventListener('click', (event) => {
+    const button =
+      event.target instanceof Element
+        ? event.target.closest('[data-theme-toggle]')
+        : null;
+    if (!button) return;
+    const isDark = root.classList.toggle('dark');
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch {}
+    updateThemeLabel(button);
+  });
 })();`;
 
 export const metadata = {
@@ -187,9 +221,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" className={cairo.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',${JSON.stringify(analyticsId)});var gaTimer;var gaLoaded=false;function loadAnalytics(){if(gaLoaded)return;gaLoaded=true;clearTimeout(gaTimer);['pointerdown','keydown','touchstart','wheel'].forEach(function(eventName){window.removeEventListener(eventName,loadAnalytics)});var script=document.createElement('script');script.async=true;script.src='https://www.googletagmanager.com/gtag/js?id='+${JSON.stringify(analyticsId)};document.head.appendChild(script)}['pointerdown','keydown','touchstart','wheel'].forEach(function(eventName){window.addEventListener(eventName,loadAnalytics,{once:true,passive:true})});window.addEventListener('load',function(){gaTimer=setTimeout(loadAnalytics,15000)},{once:true});`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
@@ -197,7 +236,6 @@ export default function RootLayout({ children }) {
       </head>
       <body className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
         {children}
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || 'G-30E5FSM42H'} />
       </body>
     </html>
   );

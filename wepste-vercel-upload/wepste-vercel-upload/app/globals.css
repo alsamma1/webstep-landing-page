@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light;
-  font-family: 'Cairo Variable', 'Cairo', Tahoma, Arial, sans-serif;
+  font-family: var(--font-cairo), Tahoma, Arial, sans-serif;
 }
 
 html {
@@ -18,7 +18,7 @@ html.dark {
 
 body {
   @apply bg-slate-50 text-slate-900 antialiased transition-colors duration-300;
-  font-family: 'Cairo Variable', 'Cairo', Tahoma, Arial, sans-serif;
+  font-family: var(--font-cairo), Tahoma, Arial, sans-serif;
   font-optical-sizing: auto;
 }
 
@@ -46,6 +46,15 @@ body {
 
 .card-glow {
   box-shadow: 0 24px 60px -28px rgba(16, 185, 129, 0.35);
+}
+
+:focus-visible {
+  outline: 3px solid #047857;
+  outline-offset: 3px;
+}
+
+.dark :focus-visible {
+  outline-color: #34d399;
 }
 
 @media (prefers-reduced-motion: reduce) {
