@@ -24,6 +24,10 @@ function loadServiceAccount() {
     }
   }
 
+  if (process.env.VERCEL) {
+    return null;
+  }
+
   const credentialsPath =
     process.env.WEBSTEP_FIREBASE_ADMIN_CREDENTIALS ||
     process.env.GOOGLE_APPLICATION_CREDENTIALS;

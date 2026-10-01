@@ -1,9 +1,11 @@
 import { MessageCircle } from 'lucide-react';
 
-export default function WhatsAppButton({ phoneNumber = '+966500000000' }) {
-  const cleanNumber = phoneNumber.replace(/[^\d]/g, '');
-  const message = encodeURIComponent('السلام عليكم، أود الاستفسار عن بناء مواقع إلكترونية متقدمة، تطبيقات ذكية، وأنظمة ERP مخصصة للشركة.');
-  const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
+export default function WhatsAppButton() {
+  const phoneNumber = '967771111357';
+  const message = encodeURIComponent(
+    'السلام عليكم، أود الاستفسار عن أنظمة ERP للمؤسسات وبناء مواقع إلكترونية سريعة وقابلة للتوسع.',
+  );
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
     <a

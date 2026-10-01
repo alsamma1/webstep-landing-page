@@ -21,6 +21,46 @@ import { getFirebaseAdminDb } from '../lib/firebase-admin';
 
 export const dynamic = 'force-dynamic';
 
+export const metadata = {
+  title: 'ويب ستيب | تطوير ويب وتطبيقات وأنظمة ERP في الوطن العربي',
+  description:
+    'شركة ويب ستيب تقدم تصميم المواقع وصفحات الهبوط والمتاجر الإلكترونية وتطوير تطبيقات الجوال وأنظمة ERP للشركات في السعودية والإمارات وقطر والكويت والبحرين وعُمان ومصر واليمن والأردن والعراق والمغرب العربي وسائر الدول العربية.',
+  keywords: [
+    'ويب ستيب',
+    'ويب_ستيب',
+    'تطوير ويب',
+    'تصميم مواقع',
+    'إنشاء صفحات هبوط',
+    'صفحات هبوط احترافية',
+    'برمجة أنظمة ERP',
+    'أنظمة ERP سحابية',
+    'تطوير تطبيقات الهواتف',
+    'تطبيقات أندرويد وآيفون',
+    'شركة برمجيات في الوطن العربي',
+    'أتمتة الأعمال',
+    'تصميم متاجر إلكترونية',
+    'برمجة تطبيقات الويب',
+    'شركة تقنية معلومات',
+    'Landing Pages',
+    'Web Development',
+    'ERP Systems',
+    'Webstep',
+    'Web Step',
+  ],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'ويب ستيب | تطوير ويب وتطبيقات وأنظمة ERP في الوطن العربي',
+    description:
+      'حلول برمجية عربية للمواقع والتطبيقات وERP للشركات ورواد الأعمال في مختلف الدول العربية.',
+    url: 'https://wepste.com/',
+    siteName: 'ويب ستيب',
+    type: 'website',
+    locale: 'ar_AR',
+  },
+};
+
 const defaultServices = [
   { id: 'service-1', title: 'بناء صفحات الهبوط (Landing Pages)', description: 'صفحات هبوط قوية وعالية الأداء مصممة لزيادة التحويلات وتحسين تصنيف Google عبر مسارات بيع سريعة.', icon: 'rocket' },
   { id: 'service-2', title: 'تطوير المواقع الإلكترونية ومتاجر الويب', description: 'مواقع احترافية وعصرية تعكس هوية المؤسسة وتدعم نمو الأعمال الرقمية.', icon: 'building' },
@@ -33,6 +73,17 @@ const serviceIcons = {
   building: Building2,
   cloud: CloudCog,
   workflow: Workflow,
+};
+
+const serviceLinks = {
+  'service-1': '/services/landing-pages',
+  'service-2': '/services/web-development',
+  'service-3': '/services/erp-systems',
+  'service-4': '/services/mobile-apps',
+  marketing: '/services/landing-pages',
+  web: '/services/web-development',
+  erp: '/services/erp-systems',
+  mobile: '/services/mobile-apps',
 };
 
 async function getServices() {
@@ -63,11 +114,52 @@ const trustBadges = [
   { text: 'حماية البيانات أثناء النقل', icon: ShieldCheck },
 ];
 
+const homepageFaq = [
+  {
+    question: 'ما خدمات تطوير المواقع التي تقدمها ويب ستيب؟',
+    answer:
+      'نطوّر مواقع الشركات والمتاجر الإلكترونية وصفحات الهبوط، مع تصميم متجاوب وأداء تقني يساعد على الزحف والفهرسة.',
+  },
+  {
+    question: 'هل تطورون تطبيقات جوال للشركات؟',
+    answer:
+      'نساعد في تخطيط وتطوير تطبيقات الجوال والويب وفق احتياج المشروع وتجربة المستخدم والمنصات المستهدفة.',
+  },
+  {
+    question: 'ما هو نظام ERP السحابي؟',
+    answer:
+      'نظام يربط عمليات المنشأة مثل المبيعات والمخزون والمحاسبة والموارد البشرية في إجراءات وبيانات مترابطة.',
+  },
+  {
+    question: 'هل يمكن تهيئة الموقع لمحركات البحث؟',
+    answer:
+      'ننفذ أساسيات SEO التقنية والمحتوى المنظم، لكن ترتيب نتائج Google يتأثر بالمنافسة وجودة المحتوى والروابط وتجربة الموقع ولا يمكن ضمان مركز محدد.',
+  },
+];
+
 export default async function HomePage() {
   const services = await getServices();
+  const faqStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: homepageFaq.map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: answer,
+      },
+    })),
+  };
 
   return (
     <main className="relative overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqStructuredData).replace(/</g, '\\u003c'),
+        }}
+      />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.16),_transparent_28%)] dark:bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.15),_transparent_28%)]" />
 
       <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
@@ -102,7 +194,7 @@ export default async function HomePage() {
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300 sm:text-xs">
-              <Sparkles className="h-3.5 w-3.5" /> حلول رقمية متكاملة للشركات
+              <Sparkles className="h-3.5 w-3.5" />               حلول رقمية للشركات ورواد الأعمال في العالم العربي
             </div>
 
             <h1 className="max-w-2xl text-[2.1rem] font-black leading-[1.35] tracking-tight text-slate-900 sm:text-5xl sm:leading-tight lg:text-6xl dark:text-slate-100">
@@ -111,7 +203,7 @@ export default async function HomePage() {
             </h1>
 
             <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:mt-6 sm:text-lg sm:leading-8">
-              حلول رقمية عملية وسريعة الاستجابة تساعد شركتك على الوصول لعملائها، تنظيم عملياتها، والنمو بثقة.
+              من السعودية والإمارات إلى مصر والمغرب وسائر الدول العربية، نصمم حلولًا رقمية عملية تساعد شركتك على خدمة عملائها، تنظيم عملياتها، والنمو بثقة.
             </p>
 
             <div className="mt-6 flex flex-col gap-3 min-[380px]:flex-row sm:mt-8 sm:gap-4">
@@ -190,6 +282,7 @@ export default async function HomePage() {
             const Icon = serviceIcons[icon] || Sparkles;
             return (
             <article key={id} className="group min-w-0 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-soft sm:rounded-[1.75rem] sm:p-6 dark:border-slate-800 dark:bg-slate-900">
+              <a href={serviceLinks[id] || serviceLinks[services.find((service) => service.id === id)?.category] || '/services/web-development'} className="block h-full rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
               <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 sm:mb-5 sm:h-14 sm:w-14 sm:rounded-2xl sm:ring-8 sm:ring-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:sm:ring-emerald-500/10">
                 <Icon className="h-4 w-4 sm:h-6 sm:w-6" />
               </div>
@@ -198,8 +291,24 @@ export default async function HomePage() {
               <div className="mt-3 inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 sm:mt-5 sm:gap-2 sm:text-xs dark:text-emerald-400">
                 نطوّرها لك <ArrowUpLeft className="h-3 w-3 transition group-hover:-translate-y-0.5 sm:h-4 sm:w-4" />
               </div>
+              </a>
             </article>
           );})}
+        </div>
+      </section>
+
+      <section aria-labelledby="faq-heading" className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 sm:pb-16 lg:px-8">
+        <div className="rounded-[1.5rem] border border-slate-200 bg-white/80 p-5 shadow-sm sm:rounded-[2rem] sm:p-8 dark:border-slate-800 dark:bg-slate-900/70">
+          <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">أسئلة شائعة</p>
+          <h2 id="faq-heading" className="mt-2 text-xl font-black text-slate-900 sm:text-2xl dark:text-slate-100">كيف نساعدك في تطوير مشروعك الرقمي؟</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {homepageFaq.map(({ question, answer }) => (
+              <details key={question} className="rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+                <summary className="cursor-pointer text-sm font-bold text-slate-900 marker:text-emerald-600 dark:text-slate-100">{question}</summary>
+                <p className="mt-3 text-xs leading-6 text-slate-600 dark:text-slate-300">{answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -232,7 +341,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <WhatsAppButton phoneNumber="+966500000000" />
+      <WhatsAppButton />
       <footer className="border-t border-slate-200 bg-white/75 px-4 py-7 dark:border-slate-800 dark:bg-slate-950/80">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-right">
           <a href="#hero" className="text-sm font-black text-slate-900 dark:text-slate-100">ويب ستيب <span className="font-medium text-slate-500">| حلول رقمية للأعمال</span></a>

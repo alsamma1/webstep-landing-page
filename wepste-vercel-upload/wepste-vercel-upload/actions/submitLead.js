@@ -34,7 +34,7 @@ export async function submitLeadAction(formData) {
       );
       return {
         success: false,
-        message: 'خدمة استقبال الطلبات غير مهيأة بعد. يرجى المحاولة لاحقًا.',
+        message: 'إعداد حفظ الطلبات غير مكتمل على الموقع. يرجى التواصل معنا عبر واتساب مؤقتًا.',
         errors: {},
       };
     }
