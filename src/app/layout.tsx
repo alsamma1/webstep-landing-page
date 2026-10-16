@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { RegionProvider } from '@/components/providers/RegionProvider'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { resolvePageMetadata } from '@/lib/seo'
 import '@fontsource/cairo/latin-300.css'
 import '@fontsource/cairo/latin-400.css'
@@ -245,6 +246,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {GA_ID && process.env.NODE_ENV === 'production' && (
           <GoogleAnalytics measurementId={GA_ID} />
         )}
+        <SpeedInsights />
       </body>
     </html>
   )
